@@ -1,0 +1,9 @@
+filter by creator_id & assignee_id 
+-----------------------------------
+
+select tasks.id, users.display_name from tasks join users on tasks.creator_id = users.id where users.email = 'akash@sourceeasy.com' and tasks.id in (select tasks_assignees.task_id from tasks_assignees join users on users.id = tasks_assignees.assignee_id where users.email = 'kuldeep@sourceeasy.com');
+
+filter by creator_id & assignee_id, customer_id
+------------------------------------------------
+
+select tasks.id, users.display_name from tasks join users on tasks.creator_id = users.id where users.email = 'jamal@sourceeasy.com' and tasks.id in (select tasks_assignees.task_id from tasks_assignees join users on users.id = tasks_assignees.assignee_id where users.email = 'jagan@sourceeasy.com') and customer_id in (select customers.id from customers where name = 'Firstcry');
