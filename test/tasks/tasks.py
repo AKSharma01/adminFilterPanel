@@ -1,10 +1,14 @@
-from tasks import *
-from ChangeParamNameWithColumnName import taskTable
+from tasksTransfomer import *
+from ChangeParamNameWithColumnName import taskTable, taskForeignTable
 
 def paramRequest(param_request):
-	page = param_request['page'] if param_request['page'] else 0
+	try:
+		page = param_request['page']
+		del param_request['page']
+	except :
+		page = 0
 	tasks_filters = TasksFilters(page)
-	print param_request
+	# print param_request
 	list_task_id = []
 	for param in param_request:
 		if "creator" == param:
@@ -23,11 +27,8 @@ def paramRequest(param_request):
 		elif "dueDate" == param:
 			dueDate_task_id = tasks_filters.getDueDateTaskId(param_request[param])
 			list_task_id.append(dueDate_task_id)
-		elif "status" == param:
-			data_task_id = tasks_filters.getDataStatusId(param_request[param])
-			list_task_id.append(data_task_id)
-		
-		elif "page" != param:
+		# elif "customer" == param:
+		else:
 			data_task_id = tasks_filters.getDataTaskId(param_request[param], param)
 			list_task_id.append(data_task_id)
 
@@ -50,9 +51,6 @@ def paramRequest(param_request):
 				break
 			s = common_task_id[idx]
 			task_ids.append(s)
-		print len(task_ids)
-		print length
-
 	return function(task_ids)
 	# return function(common_task_id, param_request['page'] if param_request['page'] else 0)
 
@@ -138,28 +136,17 @@ class TasksFilters:
 	def getDataTaskId(self, data, param):
 		data = data.split(' ')
 		data_dict = {
-			'column_to_get' : 'id',
-			'table_name' : 'tasks',
-			'column_name' : taskTable[param],
+			'column_to_get' :  taskForeignTable[taskTable[param]]['column_name'] if taskTable[param] in taskForeignTable else "id",
+			'table_name' : taskForeignTable[taskTable[param]]['table_name'] if taskTable[param] in taskForeignTable else "tasks",
+			'column_name' : taskForeignTable[taskTable[param]]['column_to_find'] if taskTable[param] in taskForeignTable else taskTable[param],
 			'column_value' : data
 		}
+		print data_dict
+		if taskTable[param] in taskForeignTable:
+			data_dict = {
+				'column_to_get' : "id",
+				'table_name' : "tasks",
+				'column_name' : taskTable[param],
+				'column_value' : self.task.getTableId(data_dict)
+			}
 		return self.getSetObject(self.task.getTableId(data_dict))
-
-	def getDataStatusId(self, data):
-		make_list = []
-		make_list.append(data)
-		data_dict = {
-			'column_to_get' : 'id',
-			'table_name' : 'task_status',
-			'column_name' : 'status',
-			'column_value' : make_list
-		}
-		data = self.task.getTableId(data_dict)
-		data_dict = {
-			'column_to_get' : 'id',
-			'table_name' : 'tasks',
-			'column_name' : 'status_id',
-			'column_value' : data[0]
-		}
-		data = self.task.getTableId(data_dict)
-		return self.getSetObject(data)

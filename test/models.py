@@ -26,7 +26,7 @@ class Postgres:
 
 	def getIdFormAnyTable(self, dict1):
 		# page = int(dict1['page']) if 'page' in dict1 else 0
-		query = "select {get_column} from {table_name} where ".format(get_column = dict1['column_to_get'], table_name = dict1['table_name'])
+		query = "SELECT {get_column} FROM {table_name} WHERE ".format(get_column = dict1['column_to_get'], table_name = dict1['table_name'])
 		for idx,column_value in enumerate(dict1['column_value']):
 			if idx > 0:
 				query = query + " or "
@@ -39,19 +39,6 @@ class Postgres:
 
 		# print fetch_data, "&&&&&&&&&&&&&&&&&&&&&&&&", len(fetch_data)
 		return fetch_data
-
-
-	def getIdFromTaskTableByDueDate(self, dict1, page=0):
-		query = "select {get_column} from {table_name} where {column_name} between \'{from_due_date}\' and \'{to_due_date}\'  "\
-		.format(get_column = dict1['column_to_get'], table_name = dict1['table_name'], column_name = dict1['column_name'], \
-		from_due_date = dict1['column_value'][0], to_due_date = dict1['column_value'][1]) 
-		self.cur.execute(query)
-		return self.cur.fetchall()
-
-	def getPSFromTable(self, dict1):
-		query = "select * from {0} where {1} = {2}".format(dict1['table_name'], dict1['column_name'], dict1['column_value'])
-		self.cur.execute(query)
-		return self.cur.fetchall()
 
 	def getByAppName(self, tablename, dict1=None, page=0):
 		if dict1 == None:
@@ -95,16 +82,14 @@ class Postgres:
 		return self.cur.fetchall()
 
 
-	# def get(self, toFind='*', tablename):
-	# 	query = "SELECT "
-	# 	pass
+	def getIdFromTaskTableByDueDate(self, dict1, page=0):
+		query = "SELECT {get_column} FROM {table_name} WHERE {column_name} BETWEEN \'{from_due_date}\' AND \'{to_due_date}\'  "\
+		.format(get_column = dict1['column_to_get'], table_name = dict1['table_name'], column_name = dict1['column_name'], \
+		from_due_date = dict1['column_value'][0], to_due_date = dict1['column_value'][1]) 
+		self.cur.execute(query)
+		return self.cur.fetchall()
 
-	# def where(self, dictToSearch):
-	# 	pass
-
-	# def date(self, date):
-	# 	pass
-
-	# def paginate(self, length):
-	# 	pass
-
+	def getPSFromTable(self, dict1):
+		query = "select * from {0} where {1} = {2}".format(dict1['table_name'], dict1['column_name'], dict1['column_value'])
+		self.cur.execute(query)
+		return self.cur.fetchall()

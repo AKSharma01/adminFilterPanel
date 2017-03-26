@@ -27,14 +27,14 @@ def function(task_list=[], page=0):
 	task_data_list = []
 	for taskid in task_list:
 		task = taskClass.getTask(task_id = taskid, page = page)[0]
-		print task['status_id']
+
 		# ===================== passing dict for creator ==============
 		dict1 = {
 			'column_name' : 'id',
 			'column_value' : task['creator_id']
 		}
 		creator = taskClass.getUser(dict1)
-		# print creator['displayName']
+
 		#====================== passing dict for assignee ==============
 		dict1 = {
 			'column_name' : 'task_id',
@@ -53,8 +53,8 @@ def function(task_list=[], page=0):
 			# 'description' : task['description'],
 			'dueDate' : task['due_date'],
 			# 'seen' : task['seen'],
-			# 'isSubmitted' : task['is_submitted'],
-			# 'isCompleted' : task['is_completed'],
+			'isSubmitted' : task['is_submitted'],
+			'isCompleted' : task['is_completed'],
 			# 'completionDate' : task['completion_date'],
 			# 'location' : json.loads(task['location']) if type(task['location']) is str else task['location'],
 			# 'status' : task['status'],
@@ -66,7 +66,7 @@ def function(task_list=[], page=0):
 			# 'archivedAt' : task['archived_at'],
 			# 'needApproval' : task['need_approval'],
 			# 'isApproved': task['is_approved'],
-			# 'schemaVersion': task['schema_version'],
+			'schemaVersion': task['schema_version'],
 			'isAssignee' : True if assignees else False,
 			'assignee' : assignees,
 			# 'isflagged' : False if userFlagged else userFlagged['is_enabled'],
